@@ -75,7 +75,7 @@ RUN yum -y upgrade \
         tigervnc-server \
         nc \
         perl \
-        perl-IPC-Cmd
+        perl-IPC-Cmd \
 && yum -y clean all --enablerepo='*' \
 # python2 installation for building mesa...
 && wget https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tgz \
