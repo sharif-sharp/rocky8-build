@@ -76,6 +76,8 @@ RUN yum -y upgrade \
         nc \
         perl \
         perl-IPC-Cmd \
+# For c++17        
+        gcc-toolset-11 \
 && yum -y clean all --enablerepo='*' \
 # python2 installation for building mesa...
 && wget https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tgz \
