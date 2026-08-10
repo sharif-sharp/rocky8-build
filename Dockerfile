@@ -12,6 +12,20 @@ ARG qt_prefix=/p
 FROM quay.io/sharpreflections/rocky8-build-base AS base
 
 ###############################################################################
+# Clazy Image
+###############################################################################
+
+FROM base AS build-clazy
+WORKDIR /build/
+RUN yum -y install git make cmake gcc gcc-c++ llvm-devel clang-devel && \
+    git clone https://github.com/KDE/clazy.git --branch 1.15 && \
+    mkdir clazy-build && cd clazy-build && \
+    cmake ../clazy -DUSER_LIBS=-lstdc++fs -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/clazy-1.15 && \
+    make --jobs=$(nproc --all) && make install && \
+    rm -rf /build/*
+
+
+###############################################################################
 # Builder Image
 ###############################################################################
 
@@ -71,6 +85,7 @@ RUN yum -y upgrade \
         wget \
         python3-pip \
         iproute-tc \
+        clang-tools-extra \
 # For Squish
         tigervnc-server \
         nc \
@@ -105,3 +120,4 @@ RUN mkdir /p
 
 COPY --from=quay.io/sharpreflections/centos7-build-protobuf /opt /opt
 COPY --from=quay.io/sharpreflections/centos7-build-qt /p /p
+COPY --from=build-clazy    /opt /opt
